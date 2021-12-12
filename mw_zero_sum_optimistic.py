@@ -21,11 +21,12 @@ class Mw_zero_sum():
         self.y_payoffs = np.array([])
     
     def update(self):
-        x_denom = self.x.T @ np.exp(self.eta * self.game @ self.y)
-        x = (self.x * np.exp(self.eta * self.game @ self.y)) / x_denom
-        y_denom = self.y.T @ np.exp(self.eta * self.game.T @ self.x)
-        self.y = (self.y * np.exp(-self.eta * self.game.T @ self.x)) / y_denom
+        x_denom = self.x.T @ np.exp((2 * self.eta * self.game @ self.y) - (self.eta * self.game @ self.y))
+        x = (self.x * np.exp((2 * self.eta * self.game @ self.y) - (self.eta * self.game @ self.y))) / x_denom
+        y_denom = self.y.T @ np.exp((-2 * self.eta * self.game.T @ self.x) + (self.eta * self.game.T @ self.x))
+        y = (self.y * np.exp((-2 * self.eta * self.game.T @ self.x) + (self.eta * self.game.T @ self.x))) / y_denom
         self.x = x
+        self.y = y
 
     def payoff(self):
         return self.x.T @ self.game @ self.y

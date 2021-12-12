@@ -1,7 +1,7 @@
 import numpy as np
 import mw_game
 
-class Mw_zero_sum_optimistic(mw_game.Mw_game):
+class Mw_single_pop(mw_game.Mw_game):
     def __init__(self, game, eta, init_strategy_x, init_strategy_y, num_iters=100):
         """[summary]
 
@@ -15,13 +15,12 @@ class Mw_zero_sum_optimistic(mw_game.Mw_game):
         super().__init__(game, eta, init_strategy_x, init_strategy_y, num_iters)
     
     def update(self):
-        x_denom = self.x.T @ np.exp((2 * self.eta * self.game @ self.y) - (self.eta * self.game @ self.y))
-        x = (self.x * np.exp((2 * self.eta * self.game @ self.y) - (self.eta * self.game @ self.y))) / x_denom
-        y_denom = self.y.T @ np.exp((-2 * self.eta * self.game.T @ self.x) + (self.eta * self.game.T @ self.x))
-        self.y = (self.y * np.exp((-2 * self.eta * self.game.T @ self.x) + (self.eta * self.game.T @ self.x))) / y_denom
+        x_denom = self.x.T @ np.exp(self.eta * self.game @ self.x)
+        x = (self.x * np.exp(self.eta * self.game @ self.y)) / x_denom
         self.x = x
-
+        self.y = x
+        
     def payoff(self):
         payoff = self.x.T @ self.game @ self.y
-        self.x_payoffs.append(payoff)
-        self.y_payoffs.append(-payoff)
+        self.x_payoffs = np.append(self.x_payoffs, payoff)
+        self.y_payoffs = np.append(self.y_payoffs, -payoff)

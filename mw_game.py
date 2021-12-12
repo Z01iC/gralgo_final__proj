@@ -26,7 +26,7 @@ class Mw_game(ABC):
     @abstractmethod
     def update(self):
         assert False, "update method not implemented"
-        
+
     @abstractmethod
     def payoff(self):
         assert False, "append_payoff method not implemented"
@@ -34,7 +34,8 @@ class Mw_game(ABC):
     def play_game(self, num_iters):
         for _ in range(num_iters):
             self.update()
-            self.x_strats.append(self.x)
-            self.y_strats.append(self.y)
+            self.x_strats = np.append(self.x_strats, [self.x], axis=0)
+            self.y_strats = np.append(self.y_strats, [self.y], axis=0)
             self.payoff()
+        print("finisehd game")
             

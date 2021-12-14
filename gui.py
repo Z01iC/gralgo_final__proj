@@ -34,8 +34,8 @@ class Mw_vis_2x2():
 if __name__ == "__main__":
     game_mat = np.array([[1, -1], [-1, 1]])
     eta = 0.1
-    init_strategy_x = np.array([0.0, 1.0])
-    init_strategy_y = np.array([1.0, 0.0])
+    init_strategy_x = np.array([0.999, 0.001])
+    init_strategy_y = np.array([0.999, 0.001])
     game = mw_zero_sum.Mw_zero_sum(game_mat, eta, init_strategy_x, init_strategy_y)
 
     print(game.x_strats)

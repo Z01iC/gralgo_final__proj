@@ -24,6 +24,6 @@ class Mw_zero_sum(mw_game.Mw_game):
     def payoff(self):
         payoff = self.x.T @ self.game @ self.y
         self.x_payoffs = np.append(self.x_payoffs, payoff)
-        self.x_payoffs = np.append(self.x_payoffs, -payoff)
+        self.y_payoffs = np.append(self.y_payoffs, -payoff)
             
             

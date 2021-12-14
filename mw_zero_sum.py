@@ -17,7 +17,7 @@ class Mw_zero_sum(mw_game.Mw_game):
     def update(self):
         x_denom = self.x.T @ np.exp(self.eta * self.game @ self.y)
         x = (self.x * np.exp(self.eta * self.game @ self.y)) / x_denom
-        y_denom = self.y.T @ np.exp(self.eta * self.game.T @ self.x)
+        y_denom = self.y.T @ np.exp(-self.eta * self.game.T @ self.x)
         self.y = (self.y * np.exp(-self.eta * self.game.T @ self.x)) / y_denom
         self.x = x
 

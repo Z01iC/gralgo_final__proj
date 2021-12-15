@@ -37,9 +37,10 @@ class Gui_3D(Gui):
         return (x, y)
 
     def plot_points(self):
-        print(self.game.x_strats[self.i])
         self.create_circle(self.map_coords(self.game.x_strats[self.i]), POINT_RADIUS, True, COLORS_3D)
         self.create_circle(self.map_coords(self.game.y_strats[self.i]), POINT_RADIUS, False, COLORS_3D)
+        self.create_circle(self.map_coords(self.game.avg_x[self.i]), POINT_RADIUS*2, True, COLORS, True)
+        self.create_circle(self.map_coords(self.game.avg_y[self.i]), POINT_RADIUS*2, False, COLORS, True)
 
 if __name__ == "__main__":
     rock_papper_sissors = np.array([[0, 1, -1], [-1, 0, 1], [1, -1, 0]])
@@ -47,8 +48,6 @@ if __name__ == "__main__":
     init_strategy_x = np.array([1.1/3, .9/3, 1.0/3])
     init_strategy_y = np.array([0.9/3, 1.0/3, 1.1/3])
     game = Mw_zero_sum(rock_papper_sissors, eta, init_strategy_x, init_strategy_y, 2000)
-    print(game.x_strats)
-    print(game.y_strats)
     gui = Gui_3D(game)
 
     

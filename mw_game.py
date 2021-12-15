@@ -19,8 +19,8 @@ class Mw_game(ABC):
         self.num_iters = num_iters
         self.x_strats = np.array([self.x])
         self.y_strats = np.array([self.y])
-        self.x_payoffs = np.array([])
-        self.y_payoffs = np.array([])
+        self.avg_x = np.zeros((num_iters, len(self.x)))
+        self.avg_y = np.zeros((num_iters, len(self.x)))
         self.play_game(num_iters=num_iters)
     
     @abstractmethod
@@ -32,10 +32,15 @@ class Mw_game(ABC):
         assert False, "append_payoff method not implemented"
 
     def play_game(self, num_iters):
-        for _ in range(num_iters):
+        for i in range(num_iters):
             self.update()
             self.x_strats = np.append(self.x_strats, [self.x], axis=0)
             self.y_strats = np.append(self.y_strats, [self.y], axis=0)
-            self.payoff()
+            self.time = np.append(self.y_strats, [self.y], axis=0)
+            self.avg_x[i] = np.mean(self.x_strats, axis=0)
+            self.avg_y[i] = np.mean(self.y_strats, axis=0)
+            
+        print(self.avg_x)
+        print(self.avg_y)
         print("finisehd game")
             

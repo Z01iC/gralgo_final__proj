@@ -14,6 +14,8 @@ class Gui(ABC):
         self.draw_outline()
         self.player_1_dots = []
         self.player_2_dots = []
+        self.prev_player_1_average = None
+        self.prev_player_2_average = None
     
         self.main_loop()
         self.master.mainloop()
@@ -30,16 +32,25 @@ class Gui(ABC):
         else:
             return "#0000" + code
 
-    def create_circle(self, coords, r=POINT_RADIUS, player=True, colors=COLORS): #center coordinates, radius
+    def create_circle(self, coords, r=POINT_RADIUS, player=True, colors=COLORS, average=False): #center coordinates, radius
         x0 = coords[0] - r
         y0 = coords[1] - r
         x1 = coords[0] + r
         y1 = coords[1] + r
-        self.re_color_dots(player, colors)
-        if player: 
-            self.player_1_dots.append(self.canvas.create_oval(x0, y0, x1, y1, fill=self.get_color(NEW_COLOR, player), outline=""))
+        if average:
+            if player:
+                self.canvas.delete(self.prev_player_1_average)
+                self.prev_player_1_average = self.canvas.create_oval(x0, y0, x1, y1, fill="Green", outline="")
+            else:
+                self.canvas.delete(self.prev_player_2_average)
+                self.prev_player_2_average = self.canvas.create_oval(x0, y0, x1, y1, fill="Pink", outline="")
         else:
-            self.player_2_dots.append(self.canvas.create_oval(x0, y0, x1, y1, fill=self.get_color(NEW_COLOR, player), outline=""))
+            self.re_color_dots(player, colors)
+            fill = self.get_color(NEW_COLOR, player)
+            if player: 
+                self.player_1_dots.append(self.canvas.create_oval(x0, y0, x1, y1, fill=fill, outline=""))
+            else:
+                self.player_2_dots.append(self.canvas.create_oval(x0, y0, x1, y1, fill=fill, outline=""))
     @abstractmethod
     def map_coords(self, strat):
         assert False, "map_coords not implemented"

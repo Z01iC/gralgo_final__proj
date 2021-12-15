@@ -1,7 +1,9 @@
 from tkinter import *
+from consts import POINT_RADIUS
 from gui import Gui
 from mw_zero_sum import Mw_zero_sum
 import numpy as np
+from consts import *
 
 class Gui_2D(Gui):
     def __init__(self, game):
@@ -22,15 +24,12 @@ class Gui_2D(Gui):
 
     def plot_points(self):
         self.create_circle(self.map_coords([self.game.x_strats[self.i][0], self.game.y_strats[self.i][0]]))
+        self.create_circle(self.map_coords([self.game.avg_x[self.i][0], self.game.avg_y[self.i][0]]), POINT_RADIUS*2, True, COLORS, True)
 
 if __name__ == "__main__":
     game_mat = np.array([[1, -1], [-1, 1]])
     eta = 0.1
     init_strategy_x = np.array([0.51, 0.49])
     init_strategy_y = np.array([0.51, 0.49])
-    game = Mw_zero_sum(game_mat, eta, init_strategy_x, init_strategy_y, 1000)
-
-    print(game.x_strats)
-    print(game.y_strats)
-
+    game = Mw_zero_sum(game_mat, eta, init_strategy_x, init_strategy_y, 100)
     Gui_2D(game)

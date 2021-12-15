@@ -2,6 +2,7 @@ from tkinter import *
 from abc import ABC, abstractmethod
 import mw_game
 from consts import *
+import time
 
 class Gui(ABC):
     def __init__(self, game, three_dimensional=False):
@@ -11,23 +12,34 @@ class Gui(ABC):
         self.game: mw_game.Mw_game = game
         self.i = 0
         self.draw_outline()
-        self.dots = []
+        self.player_1_dots = []
+        self.player_2_dots = []
+    
         self.main_loop()
         self.master.mainloop()
 
-    def re_color_dots(self):
-        tail_len = min(len(self.dots), len(COLORS))
-        for color, dot in zip(COLORS, self.dots[-tail_len:]):
-            self.canvas.itemconfig(dot, fill=color)
+    def re_color_dots(self, player, colors):
+        dots = self.player_1_dots if player else self.player_2_dots
+        tail_len = min(len(dots), len(colors))
+        for color, dot in zip(colors, dots[-tail_len:]):
+            self.canvas.itemconfig(dot, fill=self.get_color(color, player))
 
-    def create_circle(self, coords, r=POINT_RADIUS, player=True): #center coordinates, radius
+    def get_color(self, code, player):
+        if player:
+            return "#" + code + "0000"
+        else:
+            return "#0000" + code
+
+    def create_circle(self, coords, r=POINT_RADIUS, player=True, colors=COLORS): #center coordinates, radius
         x0 = coords[0] - r
         y0 = coords[1] - r
         x1 = coords[0] + r
         y1 = coords[1] + r
-        self.re_color_dots()
-        self.dots.append(self.canvas.create_oval(x0, y0, x1, y1, fill=NEW_COLOR, outline=""))
-
+        self.re_color_dots(player, colors)
+        if player: 
+            self.player_1_dots.append(self.canvas.create_oval(x0, y0, x1, y1, fill=self.get_color(NEW_COLOR, player), outline=""))
+        else:
+            self.player_2_dots.append(self.canvas.create_oval(x0, y0, x1, y1, fill=self.get_color(NEW_COLOR, player), outline=""))
     @abstractmethod
     def map_coords(self, strat):
         assert False, "map_coords not implemented"

@@ -1,53 +1,48 @@
 from tkinter import *
-import mw_zero_sum
-import numpy as np
+from abc import ABC, abstractmethod
 import mw_game
-class Mw_vis_2x2():
-    def __init__(self, game):
+from consts import *
+
+class Gui(ABC):
+    def __init__(self, game, three_dimensional=False):
         self.master: Tk = Tk()
-        self.canvas = Canvas(self.master, width=500, height=500)
-        self.canvas.create_rectangle(100, 100, 400, 400, fill="white")
+        self.canvas = Canvas(self.master, width=600, height=600)
         self.canvas.pack()
         self.game: mw_game.Mw_game = game
         self.i = 0
-        print("initialized game")
+        self.draw_outline()
+        self.dots = []
         self.main_loop()
         self.master.mainloop()
 
-    def create_circle(self, coords, r, player): #center coordinates, radius
+    def re_color_dots(self):
+        tail_len = min(len(self.dots), len(COLORS))
+        for color, dot in zip(COLORS, self.dots[-tail_len:]):
+            self.canvas.itemconfig(dot, fill=color)
+
+    def create_circle(self, coords, r=POINT_RADIUS, player=True): #center coordinates, radius
         x0 = coords[0] - r
         y0 = coords[1] - r
         x1 = coords[0] + r
         y1 = coords[1] + r
-        return self.canvas.create_oval(x0, y0, x1, y1, fill="red" if player else "blue")
+        self.re_color_dots()
+        self.dots.append(self.canvas.create_oval(x0, y0, x1, y1, fill=NEW_COLOR, outline=""))
 
-    # def map_coords(self, strat):
-    #     return (strat[0]*300+100 , strat[1]*300+100)
+    @abstractmethod
+    def map_coords(self, strat):
+        assert False, "map_coords not implemented"
 
-    # def main_loop(self):
-    #     if self.i < self.game.num_iters:
-    #         self.create_circle(self.map_coords(self.game.x_strats[self.i]), 15, True)
-    #         self.create_circle(self.map_coords(self.game.y_strats[self.i]), 15, False)
-    #         self.canvas.after(100, self.main_loop)
-    #         self.i += 1
+    @abstractmethod
+    def draw_outline(self):
+        assert False, "draw_outline not implemented"
 
-    def map_coords(self, x_strat, y_strat):
-        return (x_strat[0] * 300 + 100, y_strat[0] * 300 + 100)
+    @abstractmethod
+    def plot_points(self):
+        assert False, "plot_points not implemented"
 
     def main_loop(self):
         if self.i < self.game.num_iters:
-            self.create_circle(self.map_coords(self.game.x_strats[self.i], self.game.y_strats[self.i]), 5, True)
-            self.canvas.after(100, self.main_loop)
+            self.plot_points()
             self.i += 1
-
-if __name__ == "__main__":
-    game_mat = np.array([[1, -1], [-1, 1]])
-    eta = 0.1
-    init_strategy_x = np.array([0.51, 0.49])
-    init_strategy_y = np.array([0.51, 0.49])
-    game = mw_zero_sum.Mw_zero_sum(game_mat, eta, init_strategy_x, init_strategy_y, 1000)
-
-    print(game.x_strats)
-    print(game.y_strats)
-
-    Mw_vis_2x2(game)
+            self.canvas.after(int(1000 / FRAME_RATE), self.main_loop)
+            

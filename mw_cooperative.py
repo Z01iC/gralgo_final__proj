@@ -2,7 +2,7 @@ import numpy as np
 import mw_game
 
 class Mw_cooperative(mw_game.Mw_game):
-    def __init__(self, game, eta, init_strategy_x, init_strategy_y, num_iters=100):
+    def __init__(self, game, eta, init_strategy_x, init_strategy_y, num_iters=800):
         """[summary]
 
         Args:
@@ -21,10 +21,14 @@ class Mw_cooperative(mw_game.Mw_game):
         self.y = (self.y * np.exp(self.eta * self.game @ self.x)) / y_denom
         self.x = x
 
-    def payoff(self):
+    def payoff(self, i):
         x_payoff = self.x.T @ self.game @ self.y
         y_payoff = self.x.T @ self.game @ self.y
-        self.x_payoffs = np.append(self.x_payoffs, x_payoff)
-        self.y_payoffs = np.append(self.y_payoffs, y_payoff)
+        prev_x_payoff = self.x_payoffs[-1] if len(self.x_payoffs) > 0 else 0
+        prev_y_payoff = self.y_payoffs[-1] if len(self.y_payoffs) > 0 else 0
+        avg_x_payoff = round((prev_x_payoff * i + x_payoff) / (i+1), 10)
+        avg_y_payoff = round((prev_y_payoff * i + y_payoff) / (i+1), 10)
+        self.x_payoffs = np.append(self.x_payoffs, avg_x_payoff)
+        self.y_payoffs = np.append(self.y_payoffs, avg_y_payoff)
             
             

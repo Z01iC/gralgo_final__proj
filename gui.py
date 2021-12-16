@@ -74,7 +74,11 @@ class Gui(ABC):
         assert False, "plot_points not implemented"
 
     def main_loop(self):
-        if self.i < self.game.num_iters:
+        if self.i == 0:
+            self.plot_points()
+            self.i += 1
+            self.canvas.after(5000, self.main_loop) 
+        elif self.i < self.game.num_iters:
             self.plot_points()
             self.i += 1
             self.canvas.after(int(1000 / FRAME_RATE), self.main_loop)

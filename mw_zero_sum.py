@@ -2,7 +2,7 @@ import numpy as np
 import mw_game
 
 class Mw_zero_sum(mw_game.Mw_game):
-    def __init__(self, game, eta, init_strategy_x, init_strategy_y, num_iters=100):
+    def __init__(self, game, eta, init_strategy_x, init_strategy_y, num_iters=1500):
         """[summary]
 
         Args:

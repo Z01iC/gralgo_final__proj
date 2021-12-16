@@ -29,9 +29,22 @@ class Gui_3D(Gui):
         self.canvas.create_text(BOTTOM_LEFT[0] + int(LENGTH/2), BOTTOM_LEFT[1] + 55, text='Strategy 1 Probability')
         self.canvas.create_text(BOTTOM_LEFT[0] + int(LENGTH/10), BOTTOM_LEFT[1] - int(int(LENGTH/2) * math.sin(math.radians(60))), text='Strategy 2 probability', angle = 60)
         self.canvas.create_text(bottom_right[0] - int(LENGTH/10), bottom_right[1] - int(int(LENGTH/2) * math.sin(math.radians(60))), text='Strategy 3 Probability', angle = 300)
-        self.x_payoff = self.canvas.create_text(400, 20, text='Avg x payoff:')
-        self.y_payoff = self.canvas.create_text(400, 40, text='Avg y payoff: ')
-        self.canvas.create_text(400, 60, text='Payoffs updated every second, not every iteration')
+        self.x_payoff = self.canvas.create_text(440, 15, text='Avg x payoff:')
+        self.y_payoff = self.canvas.create_text(440, 35, text='Avg y payoff: ')
+        self.canvas.create_text(440, 55, text='Payoffs updated every second, not every iteration')
+        self.make_key()
+
+    def make_key(self):
+        self.canvas.create_text(15, 20, text='Key:')
+        self.canvas.create_text(80, 40, text='Player 1 Strategy')
+        self.canvas.create_text(80, 60, text='Player 2 Strategy')
+        self.canvas.create_text(110, 80, text='Player 1 Time Avg Strategy')
+        self.canvas.create_text(110, 100, text='Player 2 Time Avg Strategy')
+        self.draw_circle((10, 40), self.get_color(COLORS[-1], True), 6)
+        self.draw_circle((10, 60), self.get_color(COLORS_3D[-1], False), 6)
+        self.draw_circle((10, 80), COLORS_3D_P1_AVG[-1], 6)
+        self.draw_circle((10, 100), COLORS_3D_P2_AVG[-1], 6)
+        self.canvas.create_rectangle(1, 1, 200, 120)
 
     def map_coords(self, strat):
         y = BOTTOM_LEFT[1] - strat[2] * LENGTH * math.sin(math.radians(60))
@@ -53,7 +66,7 @@ if __name__ == "__main__":
     eta = 0.1
     init_strategy_x = np.array([0.25, 0.5, 0.25])
     init_strategy_y = np.array([0.25, 0.25, 0.5])
-    game = Mw_zero_sum(rock_papper_sissors, eta, init_strategy_x, init_strategy_y, 2000)
+    game = Mw_zero_sum(rock_papper_sissors, eta, init_strategy_x, init_strategy_y)
     gui = Gui_3D(game)
 
     

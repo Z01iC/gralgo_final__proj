@@ -21,6 +21,15 @@ class Gui_2D(Gui):
         self.x_payoff = self.canvas.create_text(400, 20, text='Avg x payoff:')
         self.y_payoff = self.canvas.create_text(400, 40, text='Avg y payoff: ')
         self.canvas.create_text(400, 60, text='Payoffs updated every second, not every iteration')
+        self.make_key()
+
+    def make_key(self):
+        self.canvas.create_text(15, 20, text='Key:')
+        self.canvas.create_text(50, 40, text='Strategy')
+        self.canvas.create_text(93, 60, text='Time Average Strategy')
+        self.draw_circle((10, 40), self.get_color(COLORS[-1], True), 6)
+        self.draw_circle((10, 60), COLORS_3D_P1_AVG[-1], 6)
+        self.canvas.create_rectangle(1, 1, 200, 80)
 
     def map_coords(self, strat):
         return (strat[0]*400+100 , strat[1]*400+100)
@@ -38,5 +47,5 @@ if __name__ == "__main__":
     eta = 0.1
     init_strategy_x = np.array([0.51, 0.49])
     init_strategy_y = np.array([0.51, 0.49])
-    game = Mw_zero_sum(game_mat, eta, init_strategy_x, init_strategy_y, 100)
+    game = Mw_zero_sum(game_mat, eta, init_strategy_x, init_strategy_y)
     Gui_2D(game)

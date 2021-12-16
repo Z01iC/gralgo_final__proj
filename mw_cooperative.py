@@ -23,7 +23,7 @@ class Mw_cooperative(mw_game.Mw_game):
 
     def payoff(self, i):
         x_payoff = self.x.T @ self.game @ self.y
-        y_payoff = self.x.T @ self.game @ self.y
+        y_payoff = self.x.T @ self.game.T @ self.y
         prev_x_payoff = self.x_payoffs[-1] if len(self.x_payoffs) > 0 else 0
         prev_y_payoff = self.y_payoffs[-1] if len(self.y_payoffs) > 0 else 0
         avg_x_payoff = round((prev_x_payoff * i + x_payoff) / (i+1), 10)

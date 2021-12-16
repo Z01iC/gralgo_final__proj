@@ -21,9 +21,13 @@ class Mw_zero_sum(mw_game.Mw_game):
         self.y = (self.y * np.exp(-self.eta * self.game.T @ self.x)) / y_denom
         self.x = x
 
-    def payoff(self):
+    def payoff(self, i):
         payoff = self.x.T @ self.game @ self.y
-        self.x_payoffs = np.append(self.x_payoffs, payoff)
-        self.y_payoffs = np.append(self.y_payoffs, -payoff)
+        prev_x_payoff = self.x_payoffs[-1] if len(self.x_payoffs) > 0 else 0
+        prev_y_payoff = self.y_payoffs[-1] if len(self.y_payoffs) > 0 else 0
+        avg_x_payoff = round((prev_x_payoff * (i-1) + payoff) / (i+1), 10)
+        avg_y_payoff = round((prev_y_payoff * (i-1) - payoff) / (i+1), 10)
+        self.x_payoffs = np.append(self.x_payoffs, avg_x_payoff)
+        self.y_payoffs = np.append(self.y_payoffs, avg_y_payoff)
             
             

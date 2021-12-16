@@ -29,7 +29,10 @@ class Gui_3D(Gui):
         self.canvas.create_text(BOTTOM_LEFT[0] + int(LENGTH/2), BOTTOM_LEFT[1] + 55, text='Strategy 1 Probability')
         self.canvas.create_text(BOTTOM_LEFT[0] + int(LENGTH/10), BOTTOM_LEFT[1] - int(int(LENGTH/2) * math.sin(math.radians(60))), text='Strategy 2 probability', angle = 60)
         self.canvas.create_text(bottom_right[0] - int(LENGTH/10), bottom_right[1] - int(int(LENGTH/2) * math.sin(math.radians(60))), text='Strategy 3 Probability', angle = 300)
-    
+        self.x_payoff = self.canvas.create_text(400, 20, text='Avg x payoff:')
+        self.y_payoff = self.canvas.create_text(400, 40, text='Avg y payoff: ')
+        self.canvas.create_text(400, 60, text='Payoffs updated every second, not every iteration')
+
     def map_coords(self, strat):
         y = BOTTOM_LEFT[1] - strat[2] * LENGTH * math.sin(math.radians(60))
         b = 460 + (math.tan(math.radians(60)) * (100+400*strat[0]))
@@ -39,14 +42,17 @@ class Gui_3D(Gui):
     def plot_points(self):
         self.create_circle(self.map_coords(self.game.x_strats[self.i]), POINT_RADIUS, True, COLORS_3D)
         self.create_circle(self.map_coords(self.game.y_strats[self.i]), POINT_RADIUS, False, COLORS_3D)
-        self.create_circle(self.map_coords(self.game.avg_x[self.i]), POINT_RADIUS*2, True, COLORS, True)
-        self.create_circle(self.map_coords(self.game.avg_y[self.i]), POINT_RADIUS*2, False, COLORS, True)
+        self.create_circle(self.map_coords(self.game.avg_x[self.i]), POINT_RADIUS, True, COLORS, True)
+        self.create_circle(self.map_coords(self.game.avg_y[self.i]), POINT_RADIUS, False, COLORS, True)
+        if self.i % FRAME_RATE == 0:
+            self.canvas.itemconfig(self.x_payoff, text='Avg x payoff: ' + str(self.game.x_payoffs[self.i]))
+            self.canvas.itemconfig(self.y_payoff, text='Avg y payoff: ' + str(self.game.y_payoffs[self.i]))
 
 if __name__ == "__main__":
     rock_papper_sissors = np.array([[0, 1, -1], [-1, 0, 1], [1, -1, 0]])
     eta = 0.1
-    init_strategy_x = np.array([1.1/3, .9/3, 1.0/3])
-    init_strategy_y = np.array([0.9/3, 1.0/3, 1.1/3])
+    init_strategy_x = np.array([0.25, 0.5, 0.25])
+    init_strategy_y = np.array([0.25, 0.25, 0.5])
     game = Mw_zero_sum(rock_papper_sissors, eta, init_strategy_x, init_strategy_y, 2000)
     gui = Gui_3D(game)
 

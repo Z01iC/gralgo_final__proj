@@ -14,17 +14,21 @@ class Gui(ABC):
         self.draw_outline()
         self.player_1_dots = []
         self.player_2_dots = []
-        self.prev_player_1_average = None
-        self.prev_player_2_average = None
+        self.prev_player_1_average = []
+        self.prev_player_2_average = []
     
         self.main_loop()
         self.master.mainloop()
 
-    def re_color_dots(self, player, colors):
-        dots = self.player_1_dots if player else self.player_2_dots
+    def re_color_dots(self, player, colors, average=False):
+        if not average:
+            dots = self.player_1_dots if player else self.player_2_dots
+        else:
+            dots = self.prev_player_1_average if player else self.prev_player_2_average
         tail_len = min(len(dots), len(colors))
         for color, dot in zip(colors, dots[-tail_len:]):
-            self.canvas.itemconfig(dot, fill=self.get_color(color, player))
+            fill = color if average else self.get_color(color, player)
+            self.canvas.itemconfig(dot, fill=fill)
 
     def get_color(self, code, player):
         if player:
@@ -39,11 +43,12 @@ class Gui(ABC):
         y1 = coords[1] + r
         if average:
             if player:
-                self.canvas.delete(self.prev_player_1_average)
-                self.prev_player_1_average = self.canvas.create_oval(x0, y0, x1, y1, fill="Green", outline="")
+                self.re_color_dots(player, COLORS_3D_P1_AVG, average)
+                self.prev_player_1_average.append(self.canvas.create_oval(x0, y0, x1, y1, fill="#FF17D8", outline=""))
             else:
-                self.canvas.delete(self.prev_player_2_average)
-                self.prev_player_2_average = self.canvas.create_oval(x0, y0, x1, y1, fill="Pink", outline="")
+                self.re_color_dots(player, COLORS_3D_P2_AVG, average)
+                self.prev_player_2_average.append(self.canvas.create_oval(x0, y0, x1, y1, fill="#1AFED1", outline=""))
+
         else:
             self.re_color_dots(player, colors)
             fill = self.get_color(NEW_COLOR, player)
@@ -51,6 +56,7 @@ class Gui(ABC):
                 self.player_1_dots.append(self.canvas.create_oval(x0, y0, x1, y1, fill=fill, outline=""))
             else:
                 self.player_2_dots.append(self.canvas.create_oval(x0, y0, x1, y1, fill=fill, outline=""))
+
     @abstractmethod
     def map_coords(self, strat):
         assert False, "map_coords not implemented"

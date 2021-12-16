@@ -18,6 +18,9 @@ class Gui_2D(Gui):
         self.canvas.create_text(50, 320, text='Pr(strategy 1)')
         self.canvas.create_text(80, 500, text='1')
         self.canvas.create_text(80, 100, text='0')
+        self.x_payoff = self.canvas.create_text(400, 20, text='Avg x payoff:')
+        self.y_payoff = self.canvas.create_text(400, 40, text='Avg y payoff: ')
+        self.canvas.create_text(400, 60, text='Payoffs updated every second, not every iteration')
 
     def map_coords(self, strat):
         return (strat[0]*400+100 , strat[1]*400+100)
@@ -25,6 +28,10 @@ class Gui_2D(Gui):
     def plot_points(self):
         self.create_circle(self.map_coords([self.game.x_strats[self.i][0], self.game.y_strats[self.i][0]]))
         self.create_circle(self.map_coords([self.game.avg_x[self.i][0], self.game.avg_y[self.i][0]]), POINT_RADIUS*2, True, COLORS, True)
+        if self.i % FRAME_RATE == 0:
+            self.canvas.itemconfig(self.x_payoff, text='Avg x payoff: ' + str(self.game.x_payoffs[self.i]))
+            self.canvas.itemconfig(self.y_payoff, text='Avg y payoff: ' + str(self.game.y_payoffs[self.i]))
+
 
 if __name__ == "__main__":
     game_mat = np.array([[1, -1], [-1, 1]])
